@@ -132,7 +132,7 @@ const scrapeAndStoreCourtData = async (req, res) => {
   try {
     const url =
       "https://supremecourt.gov.np/lic/sys.php?d=reports&f=weekly_public";
-    const data = await scrapeDataForDay(url, dayValue);
+    const data = await scrapeDataEveryDay(url, dayValue);
     res.status(200).json({ data });
   } catch (error) {
     console.error("Scraping failed:", error);
@@ -191,4 +191,20 @@ cron.schedule(
   }
 );
 
-module.exports = { scrapeAndStoreCourtData, searchByCaseNumber };
+const getAllScrapedData = async (req, res) => {
+  try {
+    const scrapedData = await CourtModel.find();
+    console.log(scrapedData, "ajay");
+    res.status(200).json({ scrapedData });
+  } catch (e) {
+    console.error("Error while getting all scraped data:", e);
+    res.status(500).json({ errorMessage: "Error occurred while getting data" });
+  }
+};
+
+module.exports = {
+  scrapeAndStoreCourtData,
+  scrapeDataEveryDay,
+  searchByCaseNumber,
+  getAllScrapedData,
+};
